@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "DictionarySlicing",
+        "repositoryURL": "https://github.com/wltrup/DictionarySlicing.git",
+        "state": {
+          "branch": null,
+          "revision": "eadc8241ccd0d0775993808acffecea240a3ee2f",
+          "version": "0.1.0"
+        }
+      },
+      {
+        "package": "SortOrder",
+        "repositoryURL": "https://github.com/wltrup/SortOrder.git",
+        "state": {
+          "branch": null,
+          "revision": "76b37ff57c0df7c4c8796c6904c0b191e285522c",
+          "version": "0.1.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

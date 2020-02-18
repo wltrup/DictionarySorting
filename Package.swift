@@ -10,13 +10,21 @@ let package = Package(
             name: "DictionarySorting",
             targets: ["DictionarySorting"]),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/wltrup/SortOrder.git", from: "0.1.0"),
+        .package(url: "https://github.com/wltrup/DictionarySlicing.git", from: "0.1.0"),
+    ],
     targets: [
         .target(
             name: "DictionarySorting",
-            dependencies: []),
+            dependencies: [
+                "SortOrder",
+                "DictionarySlicing",
+            ]
+        ),
         .testTarget(
             name: "DictionarySortingTests",
-            dependencies: ["DictionarySorting"]),
+            dependencies: ["DictionarySorting"]
+        ),
     ]
 )
