@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/wltrup/DictionarySlicing.git",
         "state": {
           "branch": null,
-          "revision": "eadc8241ccd0d0775993808acffecea240a3ee2f",
+          "revision": "71604880b8653e66caf6a065cc0f197d346e7b6b",
           "version": "0.1.0"
         }
       },
@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/wltrup/SortOrder.git",
         "state": {
           "branch": null,
-          "revision": "76b37ff57c0df7c4c8796c6904c0b191e285522c",
+          "revision": "69581e055e5dfc9bedd9e7de330927aa9cab7cb0",
           "version": "0.1.0"
         }
       }
