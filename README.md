@@ -11,12 +11,11 @@
 ```swift
 let data = /* ... */ // a dictionary of some kind
 let sorted = data.sorted(by: .keys(.ascending)) // returns an array of the elements stored in the
-                                                // dictionary, sorted in ascending order by their keys
+                                                // dictionary, sorted in ascending order of their keys
 ```
 
 The package provides several such ```sorted(by:)``` functions, depending on whether one or both the dictionary's `Key` and `Value` types conform to `Comparable`:
 ```swift
-
 extension Dictionary where Key: Comparable {
     
     public typealias KeyOrder = SortOrder
@@ -36,7 +35,8 @@ extension Dictionary where Value: Comparable {
     public enum ValueSorter {
         case values(ValueOrder)
     }
-    
+
+    /// Keys will not be in a well-defined order.
     public func sorted(by sorter: ValueSorter) -> [Element]
     
 }
@@ -45,15 +45,60 @@ extension Dictionary where Key: Comparable, Value: Comparable {
     
     public enum KeyValueSorter {
         case keysOnly(KeyOrder)
+        case valuesOnly(ValueOrder) // Keys will not be in a well-defined order.
         case valuesThenKeys(values: ValueOrder, keys: KeyOrder)
     }
-    
+
     public func sorted(by sorter: KeyValueSorter) -> [Element]
     
 }
 ```
 
-There are also some useful global functions: 
+Note that sorting by values without also sorting by keys does not guarantee a stable order for the keys. For example, 
+```swift
+let data = [5: 70, 6: 70, 7: 60, 8: 50]
+let valueSortedData = data.sorted(by: .valuesOnly(.ascending))
+```
+may result in *either* of these arrays:
+```swift
+[
+    (key: 8, value: 50),
+    (key: 7, value: 60),
+    (key: 5, value: 70),
+    (key: 6, value: 70),
+]
+```
+and
+```swift
+[
+    (key: 8, value: 50),
+    (key: 7, value: 60),
+    (key: 6, value: 70),
+    (key: 5, value: 70),
+]
+```
+
+The same is true with
+```swift
+let data = [5: 70, 6: 70, 7: 60, 8: 50]
+let valueSortedData = data.sorted(by: .values(.ascending))
+```
+
+Note also that there's no option
+```swift
+case keysThenValues(keys: KeyOrder, values: ValueOrder)
+```
+in the `KeyValueSorter` enumeration
+```swift
+public enum KeyValueSorter {
+    case keysOnly(KeyOrder)
+    case valuesOnly(ValueOrder) // Keys will not be in a well-defined order.
+    case valuesThenKeys(values: ValueOrder, keys: KeyOrder)
+}
+```
+because the keys in a dictionary are guaranteed to be unique and, therefore, once the dictionary is sorted by its keys, its values will be fixed and their order can no longer change.
+
+The package also provides some useful global functions: 
 ```swift
 public func sort<K: Hashable & Comparable, V>(_ subseq: Dictionary<K, V>.SubSequence,
                                               _ sorter: Dictionary<K, V>.KeySorter)
@@ -79,6 +124,10 @@ public func sort<K: Hashable & Comparable, V: Comparable>(_ kvPairs: [Dictionary
                                                           _ sorter: Dictionary<K, V>.KeyValueSorter)
     -> [Dictionary<K, V>.Element]
 ```
+
+## Dependencies
+
+**DictionarySorting** depends on two other libraries of mine, [**SortOrder**](https://github.com/wltrup/SortOrder.git) and [**DictionarySlicing**](https://github.com/wltrup/DictionarySlicing.git).
 
 ## Installation
 

@@ -36,7 +36,8 @@ extension Dictionary where Value: Comparable {
     public enum ValueSorter {
         case values(ValueOrder)
     }
-    
+
+    /// Keys will not be in a well-defined order.
     public func sorted(by sorter: ValueSorter) -> [Element] {
         switch sorter {
         case let .values(order):
@@ -49,9 +50,7 @@ extension Dictionary where Value: Comparable {
         return { arg1, arg2 in
             let (_, v1) = arg1
             let (_, v2) = arg2
-            if v1 < v2 { return order.isAscending }
-            if v1 > v2 { return order.isDescending }
-            return false
+            return (v1 < v2) == order.isAscending
         }
         
     }
@@ -62,33 +61,35 @@ extension Dictionary where Key: Comparable, Value: Comparable {
     
     public enum KeyValueSorter {
         case keysOnly(KeyOrder)
+        case valuesOnly(ValueOrder) // Keys will not be in a well-defined order.
         case valuesThenKeys(values: ValueOrder, keys: KeyOrder)
     }
-    
+
     public func sorted(by sorter: KeyValueSorter) -> [Element] {
         switch sorter {
+
         case let .keysOnly(keyOrder):
-            return self.sorted(by: Dictionary.sorter(byValueFirst: false,
-                                                     keyOrder: keyOrder,
-                                                     valueOrder: .ascending)) // valueOrder ignored
+            return self.sorted(by: Dictionary.keySorter(keyOrder))
+
+        case let .valuesOnly(valueOrder):
+            return self.sorted(by: Dictionary.valueSorter(valueOrder))
+
         case let .valuesThenKeys(valueOrder, keyOrder):
-            return self.sorted(by: Dictionary.sorter(byValueFirst: true,
-                                                     keyOrder: keyOrder,
-                                                     valueOrder: valueOrder))
+            return self.sorted(by: Dictionary.sorter(valueOrder: valueOrder, keyOrder: keyOrder))
+
         }
     }
     
-    static func sorter(byValueFirst: Bool, keyOrder: KeyOrder, valueOrder: ValueOrder) ->
+    static func sorter(valueOrder: ValueOrder, keyOrder: KeyOrder) ->
         ((Key, Value), (Key, Value)) -> Bool {
             
             return { arg1, arg2 in
                 let (k1, v1) = arg1
                 let (k2, v2) = arg2
-                if byValueFirst {
-                    if v1 < v2 { return valueOrder.isAscending }
-                    if v1 > v2 { return valueOrder.isDescending }
-                }
-                return (k1 < k2) == keyOrder.isAscending
+                if v1 < v2 { return valueOrder.isAscending }
+                if v1 > v2 { return valueOrder.isDescending }
+                if k1 < k2 { return keyOrder.isAscending }
+                return keyOrder.isDescending
             }
             
     }
